@@ -49,6 +49,15 @@
           "default": false,
           "description": "Allow emoji in generated commit messages."
         },
+        "commitMuse.outputMode": {
+          "type": "string",
+          "enum": [
+            "single",
+            "multi"
+          ],
+          "default": "multi",
+          "description": "Output one commit entry or multiple entries."
+        },
         "commitMuse.provider": {
           "type": "string",
           "enum": [
@@ -75,8 +84,8 @@
         },
         "commitMuse.promptTemplate": {
           "type": "string",
-          "default": "Generate a git commit message from the diff below.\\n\\nRequirements:\\n- Language: {{language}}\\n- Use Conventional Commits format\\n- Keep subject concise (around 72 chars max when possible)\\n- {{emojiInstruction}}\\n- Output only the final commit message text, no explanation, no markdown code fence\\n\\nGit diff:\\n{{diff}}",
-          "markdownDescription": "Prompt template for generation. Available placeholders: `{{language}}`, `{{emojiInstruction}}`, `{{diff}}`."
+          "default": "Generate a git commit message from the diff below.\\n\\nRequirements:\\n- Language: {{language}}\\n- Use Conventional Commits format\\n- {{outputModeInstruction}}\\n- Keep subject concise (around 72 chars max when possible)\\n- {{emojiInstruction}}\\n- Output only the final commit message text, no explanation, no markdown code fence\\n\\nGit diff:\\n{{diff}}",
+          "markdownDescription": "Prompt template for generation. Available placeholders: `{{language}}`, `{{outputModeInstruction}}`, `{{emojiInstruction}}`, `{{diff}}`."
         }
       }
     }

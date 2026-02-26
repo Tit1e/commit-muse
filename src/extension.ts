@@ -9,6 +9,7 @@ const DEFAULT_PROMPT_TEMPLATE =
 	'Requirements:\n' +
 	'- Language: {{language}}\n' +
 	'- Use Conventional Commits format\n' +
+	'- {{outputModeInstruction}}\n' +
 	'- Keep subject concise (around 72 chars max when possible)\n' +
 	'- {{emojiInstruction}}\n' +
 	'- Output only the final commit message text, no explanation, no markdown code fence\n\n' +
@@ -30,10 +31,12 @@ interface GitExtension {
 
 type Language = 'English' | 'Chinese';
 type Provider = 'OpenAI' | 'OpenAI-Compatible';
+type OutputMode = 'single' | 'multi';
 
 interface CommitMuseConfig {
 	language: Language;
 	useEmoji: boolean;
+	outputMode: OutputMode;
 	provider: Provider;
 	apiKey: string;
 	baseUrl: string;
@@ -113,6 +116,7 @@ function readConfig(): CommitMuseConfig {
 	return {
 		language: config.get<Language>('language', 'English'),
 		useEmoji: config.get<boolean>('useEmoji', false),
+		outputMode: config.get<OutputMode>('outputMode', 'multi'),
 		provider: config.get<Provider>('provider', 'OpenAI'),
 		apiKey: config.get<string>('apiKey', ''),
 		baseUrl: config.get<string>('baseUrl', 'https://api.openai.com/v1'),
@@ -122,7 +126,13 @@ function readConfig(): CommitMuseConfig {
 }
 
 async function generateCommitMessageWithAI(diff: string, config: CommitMuseConfig): Promise<string> {
-	const prompt = renderPrompt(config.promptTemplate, diff, config.language, config.useEmoji);
+	const prompt = renderPrompt(
+		config.promptTemplate,
+		diff,
+		config.language,
+		config.useEmoji,
+		config.outputMode
+	);
 	const endpoint = `${config.baseUrl.replace(/\/+$/, '')}/chat/completions`;
 	const providerContext =
 		config.provider === 'OpenAI'
@@ -162,17 +172,28 @@ async function generateCommitMessageWithAI(diff: string, config: CommitMuseConfi
 		throw new Error('AI response was empty.');
 	}
 
-	return normalizeCommitMessage(content);
+	return normalizeCommitMessage(content, config.useEmoji, config.outputMode);
 }
 
-function renderPrompt(template: string, diff: string, language: Language, useEmoji: boolean): string {
+function renderPrompt(
+	template: string,
+	diff: string,
+	language: Language,
+	useEmoji: boolean,
+	outputMode: OutputMode
+): string {
 	const safeTemplate = template?.trim() ? template : DEFAULT_PROMPT_TEMPLATE;
 	const emojiInstruction = useEmoji
-		? 'Emoji is allowed when it improves clarity.'
+		? 'Must include exactly one relevant emoji in the commit subject.'
 		: 'Do not use emoji.';
+	const outputModeInstruction =
+		outputMode === 'multi'
+			? 'If there are multiple change types, output multiple commit entries separated by a single newline.'
+			: 'Output exactly one commit entry that summarizes the key changes.';
 
 	let rendered = safeTemplate
 		.replaceAll('{{language}}', language)
+		.replaceAll('{{outputModeInstruction}}', outputModeInstruction)
 		.replaceAll('{{emojiInstruction}}', emojiInstruction)
 		.replaceAll('{{diff}}', diff);
 
@@ -183,12 +204,99 @@ function renderPrompt(template: string, diff: string, language: Language, useEmo
 	return rendered;
 }
 
-function normalizeCommitMessage(raw: string): string {
+function normalizeCommitMessage(raw: string, useEmoji: boolean, outputMode: OutputMode): string {
 	let value = raw.trim();
 	if (value.startsWith('```')) {
 		value = value.replace(/^```[a-zA-Z]*\n?/, '').replace(/```$/, '').trim();
 	}
-	return value.replace(/^["']|["']$/g, '').trim();
+	value = value.replace(/^["']|["']$/g, '').trim();
+	value = useEmoji ? ensureEmoji(value) : removeEmoji(value);
+	return outputMode === 'multi' ? normalizeEntrySeparation(value) : value;
+}
+
+function ensureEmoji(message: string): string {
+	const lines = message.split('\n');
+	let firstHeaderHandled = false;
+
+	const normalized = lines.map((line) => {
+		const compact = line.replace(/\s{2,}/g, ' ').trim();
+		if (!compact) {
+			return '';
+		}
+
+		const withoutEmoji = stripEmojis(compact).trim();
+		const type = detectCommitType(withoutEmoji);
+		if (type) {
+			firstHeaderHandled = true;
+			return `${emojiForCommitType(type)} ${withoutEmoji}`.trim();
+		}
+
+		if (!firstHeaderHandled) {
+			firstHeaderHandled = true;
+			return `${emojiForCommitType(undefined)} ${withoutEmoji}`.trim();
+		}
+
+		return line;
+	});
+
+	return normalized.join('\n').trim();
+}
+
+function removeEmoji(message: string): string {
+	const lines = message.split('\n');
+	const normalized = lines.map((line) => {
+		const compact = line.replace(/\s{2,}/g, ' ').trim();
+		if (!compact) {
+			return '';
+		}
+		const withoutEmoji = stripEmojis(compact).trim();
+		return detectCommitType(withoutEmoji) ? withoutEmoji : line;
+	});
+	return normalized.join('\n').trim();
+}
+
+function detectCommitType(message: string): string | undefined {
+	const match = message.match(/^([a-z]+)(?:\([^)]+\))?!?:/i);
+	return match?.[1]?.toLowerCase();
+}
+
+function stripEmojis(text: string): string {
+	return text.replace(/\p{Extended_Pictographic}\uFE0F?/gu, '');
+}
+
+function normalizeEntrySeparation(message: string): string {
+	return message.replace(/\n{2,}(?=\s*(?:\p{Extended_Pictographic}\uFE0F?\s*)?[a-z]+(?:\([^)]+\))?!?:)/gu, '\n');
+}
+
+function emojiForCommitType(type: string | undefined): string {
+	switch (type) {
+		case 'feat':
+			return '✨';
+		case 'fix':
+			return '🐛';
+		case 'docs':
+			return '📝';
+		case 'style':
+			return '🌈';
+		case 'refactor':
+			return '♻️';
+		case 'perf':
+			return '⚡️';
+		case 'test':
+			return '✅';
+		case 'build':
+			return '📦';
+		case 'ci':
+			return '👷';
+		case 'chore':
+			return '🔧';
+		case 'revert':
+			return '↩';
+		case 'i18n':
+			return '🌐';
+		default:
+			return '🔧';
+	}
 }
 
 async function safeReadErrorBody(response: Response): Promise<string> {
