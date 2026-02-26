@@ -16,9 +16,70 @@
       {
         "command": "commit-muse.generateCommitMessage",
         "title": "AI: Generate Commit Message",
-        "category": "Commit Muse"
+        "category": "Commit Muse",
+        "icon": {
+          "light": "media/commit-muse-light.svg",
+          "dark": "media/commit-muse-dark.svg"
+        }
       }
-    ]
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "commit-muse.generateCommitMessage",
+          "when": "scmProvider == git",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Commit Muse",
+      "properties": {
+        "commitMuse.language": {
+          "type": "string",
+          "enum": [
+            "English",
+            "Chinese"
+          ],
+          "default": "English",
+          "description": "Language used for the generated commit message."
+        },
+        "commitMuse.useEmoji": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow emoji in generated commit messages."
+        },
+        "commitMuse.provider": {
+          "type": "string",
+          "enum": [
+            "OpenAI",
+            "OpenAI-Compatible"
+          ],
+          "default": "OpenAI",
+          "description": "Model provider type."
+        },
+        "commitMuse.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for your OpenAI-compatible provider."
+        },
+        "commitMuse.baseUrl": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "Base URL for the OpenAI-compatible API endpoint."
+        },
+        "commitMuse.model": {
+          "type": "string",
+          "default": "gpt-4o-mini",
+          "description": "Model name to use when generating commit messages."
+        },
+        "commitMuse.promptTemplate": {
+          "type": "string",
+          "default": "Generate a git commit message from the diff below.\\n\\nRequirements:\\n- Language: {{language}}\\n- Use Conventional Commits format\\n- Keep subject concise (around 72 chars max when possible)\\n- {{emojiInstruction}}\\n- Output only the final commit message text, no explanation, no markdown code fence\\n\\nGit diff:\\n{{diff}}",
+          "markdownDescription": "Prompt template for generation. Available placeholders: `{{language}}`, `{{emojiInstruction}}`, `{{diff}}`."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
