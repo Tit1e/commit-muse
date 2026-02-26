@@ -1,8 +1,13 @@
 {
   "name": "commit-muse",
+  "publisher": "tit1e",
   "displayName": "commit-muse",
   "description": "AI-powered git commit message generator",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tit1e/commit-muse"
+  },
   "engines": {
     "vscode": "^1.109.0"
   },
