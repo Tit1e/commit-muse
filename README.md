@@ -1,71 +1,71 @@
-# commit-muse README
+# Commit Muse
 
-This is the README for your extension "commit-muse". After writing up a brief description, we recommend including the following sections.
+Commit Muse is a VS Code extension that generates Git commit messages from your current diff using OpenAI or OpenAI-compatible APIs.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Generate commit messages from Source Control with one click.
+- Supports `staged` diff first, falls back to `unstaged` diff.
+- Configurable language: `English` or `Chinese`.
+- Optional emoji prefix based on commit type (e.g. `feat` -> `✨`, `fix` -> `🐛`).
+- Custom API settings: key, base URL, model.
+- Custom prompt template with placeholders.
+- Output mode:
+  - `single`: one commit entry
+  - `multi`: multiple commit entries (newline separated)
 
-For example if there is an image subfolder under your extension project workspace:
+## Command
 
-\!\[feature X\]\(images/feature-x.png\)
+- `AI: Generate Commit Message`
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+This command also appears as a button in the Source Control title bar for Git repositories.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Commit Muse contributes the following settings:
 
-For example:
+- `commitMuse.language`: `English` or `Chinese`
+- `commitMuse.useEmoji`: enable/disable emoji prefix
+- `commitMuse.outputMode`: `single` or `multi`
+- `commitMuse.provider`: `OpenAI` or `OpenAI-Compatible`
+- `commitMuse.apiKey`: API key
+- `commitMuse.baseUrl`: API base URL (default: `https://api.openai.com/v1`)
+- `commitMuse.model`: model name (default: `gpt-4o-mini`)
+- `commitMuse.promptTemplate`: custom prompt template
 
-This extension contributes the following settings:
+Prompt placeholders:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- `{{language}}`
+- `{{outputModeInstruction}}`
+- `{{emojiInstruction}}`
+- `{{diff}}`
 
-## Known Issues
+## Requirements
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- VS Code `^1.109.0`
+- A Git repository in your workspace
+- A valid API key for your selected provider
 
-## Release Notes
+## Usage
 
-Users appreciate release notes as you update your extension.
+1. Open a Git repository in VS Code.
+2. Make changes (recommended: stage changes first).
+3. Configure `commitMuse` settings (`apiKey`, `baseUrl`, `model`, etc.).
+4. Run `AI: Generate Commit Message` or click the SCM button.
+5. Review the generated message in the SCM input box, then commit.
 
-### 1.0.0
+## Notes
 
-Initial release of ...
+- Untracked files are not included in `git diff` unless you stage them.
+- If no diff is available, Commit Muse will show a message and stop.
 
-### 1.0.1
+## Development
 
-Fixed issue #.
+- Install dependencies: `npm install`
+- Build: `npm run compile`
+- Run extension host: `F5` in VS Code
+- Package: `npx @vscode/vsce package`
 
-### 1.1.0
+## License
 
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+MIT
