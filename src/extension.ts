@@ -114,13 +114,13 @@ function getRepositoryForActiveEditor(): GitRepository | undefined {
 function readConfig(): CommitMuseConfig {
 	const config = vscode.workspace.getConfiguration(CONFIG_SECTION);
 	return {
-		language: config.get<Language>('language', 'English'),
+		language: config.get<Language>('language', 'Chinese'),
 		useEmoji: config.get<boolean>('useEmoji', false),
-		outputMode: config.get<OutputMode>('outputMode', 'multi'),
-		provider: config.get<Provider>('provider', 'OpenAI'),
+		outputMode: config.get<OutputMode>('outputMode', 'single'),
+		provider: config.get<Provider>('provider', 'OpenAI-Compatible'),
 		apiKey: config.get<string>('apiKey', ''),
-		baseUrl: config.get<string>('baseUrl', 'https://api.openai.com/v1'),
-		model: config.get<string>('model', 'gpt-4o-mini'),
+		baseUrl: config.get<string>('baseUrl', 'https://api.deepseek.com/v1'),
+		model: config.get<string>('model', 'deepseek-chat'),
 		promptTemplate: config.get<string>('promptTemplate', DEFAULT_PROMPT_TEMPLATE),
 	};
 }
