@@ -24,13 +24,13 @@ This command also appears as a button in the Source Control title bar for Git re
 
 Commit Muse contributes the following settings:
 
-- `commitMuse.language`: `English` or `Chinese`
+- `commitMuse.language`: `English` or `Chinese` (default: `Chinese`)
 - `commitMuse.useEmoji`: enable/disable emoji prefix
-- `commitMuse.outputMode`: `single` or `multi`
-- `commitMuse.provider`: `OpenAI` or `OpenAI-Compatible`
+- `commitMuse.outputMode`: `single` or `multi` (default: `single`)
+- `commitMuse.provider`: `OpenAI` or `OpenAI-Compatible` (default: `OpenAI-Compatible`)
 - `commitMuse.apiKey`: API key
-- `commitMuse.baseUrl`: API base URL (default: `https://api.openai.com/v1`)
-- `commitMuse.model`: model name (default: `gpt-4o-mini`)
+- `commitMuse.baseUrl`: API base URL (default: `https://api.deepseek.com/v1`)
+- `commitMuse.model`: model name (default: `deepseek-chat`)
 - `commitMuse.promptTemplate`: custom prompt template
 
 Prompt placeholders:

@@ -47,7 +47,7 @@
             "English",
             "Chinese"
           ],
-          "default": "English",
+          "default": "Chinese",
           "description": "Language used for the generated commit message."
         },
         "commitMuse.useEmoji": {
@@ -61,7 +61,7 @@
             "single",
             "multi"
           ],
-          "default": "multi",
+          "default": "single",
           "description": "Output one commit entry or multiple entries."
         },
         "commitMuse.provider": {
@@ -70,7 +70,7 @@
             "OpenAI",
             "OpenAI-Compatible"
           ],
-          "default": "OpenAI",
+          "default": "OpenAI-Compatible",
           "description": "Model provider type."
         },
         "commitMuse.apiKey": {
@@ -80,12 +80,12 @@
         },
         "commitMuse.baseUrl": {
           "type": "string",
-          "default": "https://api.openai.com/v1",
+          "default": "https://api.deepseek.com/v1",
           "description": "Base URL for the OpenAI-compatible API endpoint."
         },
         "commitMuse.model": {
           "type": "string",
-          "default": "gpt-4o-mini",
+          "default": "deepseek-chat",
           "description": "Model name to use when generating commit messages."
         },
         "commitMuse.promptTemplate": {
