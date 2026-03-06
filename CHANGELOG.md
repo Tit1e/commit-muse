@@ -6,4 +6,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-- Initial release
+## [0.0.3] - 2026-03-06
+
+- Set DeepSeek-compatible defaults for `baseUrl` and `model`.
+- Default generated commit messages to Chinese single-line output.
+- Refresh extension icons and add the marketplace package icon.
+- Add MIT license and complete repository metadata.
