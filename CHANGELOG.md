@@ -6,6 +6,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.4] - 2026-03-06
+
+- Add GitHub Actions publishing on pushed version tags.
+- Clarify the tag-based release flow in the README.
+
 ## [0.0.3] - 2026-03-06
 
 - Set DeepSeek-compatible defaults for `baseUrl` and `model`.

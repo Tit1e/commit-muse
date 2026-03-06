@@ -4,7 +4,7 @@
   "displayName": "commit-muse",
   "description": "AI-powered git commit message generator",
   "icon": "media/commit-muse.png",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/Tit1e/commit-muse"

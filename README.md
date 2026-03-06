@@ -65,6 +65,7 @@ Prompt placeholders:
 - Build: `npm run compile`
 - Run extension host: `F5` in VS Code
 - Package: `npx @vscode/vsce package`
+- Publish from a version tag: push `v*` tags to trigger the GitHub Actions release workflow
 
 ## License
 
